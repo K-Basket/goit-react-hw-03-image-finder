@@ -17,14 +17,15 @@ export class App extends Component {
     }));
   };
 
+  // метод для получения данных state.search из формы
   formSabmitHandler = data => {
-    console.log(data);
+    console.log('data-Search', data);
   };
 
   render() {
     return (
       <Main>
-        <Searchbar onSabmitData={this.formSabmitHandler} />
+        <Searchbar onSubmitData={this.formSabmitHandler} />
         <ImageGallery onClose={this.toggleModal} />
         <Button />
         {this.state.showModal && (
