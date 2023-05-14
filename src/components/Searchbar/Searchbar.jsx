@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 // import PropTypes from 'prop-types';
+import Notiflix from 'notiflix';
 import { Header, Form, Button } from './Styled';
 import { ReactComponent as SearchIcon } from '../img/search-solid.svg';
+
+const INITIAL_STATE = { search: '' }; // для очистки input
 
 export class Searchbar extends Component {
   state = {
@@ -10,28 +13,28 @@ export class Searchbar extends Component {
 
   // 2. метод записывает в state значение, которое вводим в поле input
   handleInputChange = evt => {
-    console.log('target', evt.currentTarget.value);
     this.setState({ search: evt.currentTarget.value });
   };
-
-  // onSubmit = this.props.onSubmitData;
-
-  // handleChange = evt => {
-  //   console.log(c);
-  //   // this.setState({ search: evt.currenntTarget.search });
-  // };
 
   handleSubmit = evt => {
     evt.preventDefault();
 
-    console.log(this.state);
-    this.props.onSubmitData(this.state);
-    // this.setState({search: ''})
+    if (this.state.search.trim() === '') {
+      Notiflix.Notify.warning('Please enter search data');
+      return;
+    }
+
+    this.props.onSubmit(this.state);
+    this.reset();
+
+    // очистить разметку для нового поиска
+  };
+
+  reset = () => {
+    this.setState({ ...INITIAL_STATE });
   };
 
   render() {
-    console.log('Search', this.state.search);
-
     return (
       <Header>
         <Form onSubmit={this.handleSubmit}>
@@ -40,15 +43,14 @@ export class Searchbar extends Component {
           </Button>
 
           <input
-            // className="input"
             type="text"
             name="search"
-            // 1. в value записываем данные из state ------------------ temp
+            // в value записываем данные из state
             value={this.state.search}
-            // 3. onChange при каждом вводе в поле input будет вызывать метод handleInputChange, который будет записывать вводимое в State
+            // при вводе в поле атрибут onChange вызывает метод handleInputChange, который будет записывать вводимое в State
             onChange={this.handleInputChange}
-            // autocomplete="off"
-            // autofocus
+            autoComplete="off"
+            autoFocus
             placeholder="Search images and photos"
           />
         </Form>
@@ -56,25 +58,3 @@ export class Searchbar extends Component {
     );
   }
 }
-
-// export function Searchbar({ onSubmit }) {
-//   return (
-//     <Header>
-//       <Form>
-//         <Button type="submit">
-//           <SearchIcon width="13" height="13" />
-//         </Button>
-
-//         <input
-//           className="input"
-//           type="text"
-//           name="search"
-//           // value={}
-//           // autocomplete="off"
-//           // autofocus
-//           placeholder="Search images and photos"
-//         />
-//       </Form>
-//     </Header>
-//   );
-// }

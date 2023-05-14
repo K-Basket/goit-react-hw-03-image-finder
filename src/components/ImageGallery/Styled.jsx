@@ -12,3 +12,8 @@ export const Gallery = styled.ul`
   margin-left: auto;
   margin-right: auto;
 `;
+
+export const Loading = styled.div`
+  display: flex;
+  justify-content: center;
+`;
