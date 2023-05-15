@@ -3,7 +3,7 @@ import { Main } from './Styled';
 import { Searchbar } from './Searchbar';
 import { ImageGallery } from './ImageGallery';
 import { Modal } from './Modal';
-import { Button } from './Button';
+// import { Button } from './Button';
 import { ImageGalleryItem } from './ImageGalleryItem';
 // import { Loader } from './Loader';
 
@@ -73,7 +73,7 @@ export class App extends Component {
           {/* {this.state.loading ? <Loader /> : <p>введите данные для поиска</p>} */}
         </ImageGallery>
 
-        <Button />
+        {/* <Button /> */}
 
         {this.state.showModal && (
           <Modal onClose={this.toggleModal}>

@@ -1,4 +1,4 @@
-import { ModalCont } from 'components/Modal';
+// import { ModalCont } from 'components/Modal';
 import { GalleryItem } from './Styled';
 
 export function ImageGalleryItem({ id, webformatURL, largeImageURL, onClose }) {

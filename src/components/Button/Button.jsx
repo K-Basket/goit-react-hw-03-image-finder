@@ -1,7 +1,10 @@
-import React, { Component } from 'react';
+// import React, { Component } from 'react';
+import { Btn } from './Styled';
 
-export class Button extends Component {
-  render() {
-    return <button type="button">Load more</button>;
-  }
+export function Button({ onMoreLoad }) {
+  return (
+    <Btn onClick={onMoreLoad} type="button">
+      Load more
+    </Btn>
+  );
 }
