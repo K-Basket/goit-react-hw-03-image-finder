@@ -1,22 +1,19 @@
 import React, { Children, Component } from 'react';
+import Notiflix from 'notiflix';
 import { Gallery, Loading } from './Styled';
 import { ImageGalleryItem } from 'components/ImageGalleryItem';
 import { Loader } from '../Loader/Loader';
 
 export class ImageGallery extends Component {
-  // onClose = this.props.onClose;
-  // searchData = this.props.searchData;
-
   state = {
     dataGallery: [],
     loader: false,
+    status: 'idle',
   };
 
   componentDidUpdate(prevProps, prevState) {
-    // prevProps.searchData - предыдущий рендер поисвка, this.props.searchData - текущий рендер поиска
-    // если изменения в поиске были, значит снова фетчим
     if (prevProps.searchData !== this.props.searchData) {
-      this.setState({ loader: true });
+      this.setState({ status: 'pending' });
       this.setState({ dataGallery: [] }); // очищает разметку, если search не совпадает с предыдущим
 
       setTimeout(() => {
@@ -25,43 +22,64 @@ export class ImageGallery extends Component {
         )
           .then(res => res.json())
           .then(data => {
-            // console.log('data', data.hits);
-            this.setState({ dataGallery: data.hits });
-            // this.props.onDataGallery(data);
+            if (!data.totalHits) {
+              this.setState({ status: 'rejected' });
+              Notiflix.Notify.info('Sorry, there are no such images');
+
+              return;
+            }
+
+            this.setState({ dataGallery: data.hits, status: 'resolved' });
           })
-          .finally(() => this.setState({ loader: false }));
+          .catch(error =>
+            this.setState(console.log(error), { satus: 'rejected' })
+          );
       }, 1500);
     }
   }
 
   render() {
-    return (
-      <>
+    if (this.state.status === 'resolved') {
+      return (
         <Gallery>
-          {this.state.dataGallery && (
-            <>
-              {this.state.dataGallery.map(
-                ({ id, webformatURL, largeImageURL }) => (
-                  <ImageGalleryItem
-                    key={id}
-                    webformatURL={webformatURL}
-                    largeImageURL={largeImageURL}
-                    onClose={this.props.onClose}
-                  />
-                )
-              )}
-            </>
-          )}
-          <div>{this.props.children}</div>
+          <>
+            {this.state.dataGallery.map(
+              ({ id, webformatURL, largeImageURL }) => (
+                <ImageGalleryItem
+                  key={id}
+                  webformatURL={webformatURL}
+                  largeImageURL={largeImageURL}
+                  onClose={this.props.onClose}
+                />
+              )
+            )}
+          </>
         </Gallery>
+      );
+    }
 
+    if (this.state.status === 'idle') {
+      return (
         <Loading>
-          {this.state.dataGallery.length === 0 && !this.state.loader && (
-            <p>введите данные для поиска</p>
-          )}
-          {this.state.loader && <Loader />}
+          <p>Введите данные для поиска</p>
         </Loading>
-      </>
-    );
+      );
+    }
+
+    if (this.state.status === 'pending') {
+      return (
+        <Loading>
+          <Loader />
+        </Loading>
+      );
+    }
+
+    if (this.state.status === 'rejected') {
+      return (
+        <Loading>
+          <p>{`Изображения "${this.props.searchData}" отсутствуют`}</p>
+        </Loading>
+      );
+    }
   }
 }
