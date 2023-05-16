@@ -18,10 +18,7 @@ export class App extends Component {
   };
 
   handleFormSubmit = data => {
-    // console.log('data-Search', data);
-
     this.setState({ searchData: data.search });
-    // this.setState({ loading: true });
   };
 
   handleLargeImageURL = url => {
