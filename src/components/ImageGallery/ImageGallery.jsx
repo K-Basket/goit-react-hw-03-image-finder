@@ -17,46 +17,42 @@ export class ImageGallery extends Component {
     if (prevProps.searchData !== this.props.searchData) {
       this.setState({ status: 'pending', dataGallery: [], page: 1 });
 
-      setTimeout(() => {
-        fetch(
-          `https://pixabay.com/api/?key=7971179-456b552bdb2500af743f56cc5&q=${this.props.searchData}&image_type=photo&per_page=12&page=${this.state.page}`
-        )
-          .then(res => res.json())
-          .then(data => {
-            if (!data.totalHits) {
-              this.setState({ status: 'rejected' });
-              Notiflix.Notify.info('Sorry, there are no such images');
+      fetch(
+        `https://pixabay.com/api/?key=7971179-456b552bdb2500af743f56cc5&q=${this.props.searchData}&image_type=photo&per_page=12&page=${this.state.page}`
+      )
+        .then(res => res.json())
+        .then(data => {
+          if (!data.totalHits) {
+            this.setState({ status: 'rejected' });
+            Notiflix.Notify.info('Sorry, there are no such images');
 
-              return;
-            }
+            return;
+          }
 
-            this.setState({ dataGallery: data.hits, status: 'resolved' });
-          })
-          .catch(error =>
-            this.setState(console.log(error), { satus: 'rejected' })
-          );
-      }, 1000);
+          this.setState({ dataGallery: data.hits, status: 'resolved' });
+        })
+        .catch(error =>
+          this.setState(console.log(error), { satus: 'rejected' })
+        );
     }
 
     if (prevState.page !== this.state.page) {
       // this.setState({ status: 'pending' });
       this.setState({ loader: true });
 
-      setTimeout(() => {
-        fetch(
-          `https://pixabay.com/api/?key=7971179-456b552bdb2500af743f56cc5&q=${this.props.searchData}&image_type=photo&per_page=12&page=${this.state.page}`
-        )
-          .then(res => res.json())
-          .then(data => {
-            this.setState(prevState => ({
-              dataGallery: [...prevState.dataGallery, ...data.hits],
-              loader: false,
-            }));
-          })
-          .catch(error =>
-            this.setState(console.log(error), { satus: 'rejected' })
-          );
-      }, 1000);
+      fetch(
+        `https://pixabay.com/api/?key=7971179-456b552bdb2500af743f56cc5&q=${this.props.searchData}&image_type=photo&per_page=12&page=${this.state.page}`
+      )
+        .then(res => res.json())
+        .then(data => {
+          this.setState(prevState => ({
+            dataGallery: [...prevState.dataGallery, ...data.hits],
+            loader: false,
+          }));
+        })
+        .catch(error =>
+          this.setState(console.log(error), { satus: 'rejected' })
+        );
     }
   }
 
@@ -64,31 +60,33 @@ export class ImageGallery extends Component {
     this.setState(prevState => ({ page: prevState.page + 1 }));
   };
 
-  render() {
-    // console.log('statePage', this.state.page); // ====== temp
-    console.log('loader', this.state.loader); // ====== temp
+  // getLinkImage = evt => {
+  //   // console.log(evt.target.src);
+  //   console.log(evt.target);
+  //   console.log('Hi');
+  // };
 
-    const { status } = this.state;
+  render() {
+    const { status, loader, dataGallery } = this.state;
 
     if (status === 'resolved') {
       return (
         <>
           <Gallery>
             <>
-              {this.state.dataGallery.map(
-                ({ id, webformatURL, largeImageURL }) => (
-                  <ImageGalleryItem
-                    key={id}
-                    webformatURL={webformatURL}
-                    largeImageURL={largeImageURL}
-                    onClose={this.props.onClose}
-                  />
-                )
-              )}
+              {dataGallery.map(({ id, webformatURL, largeImageURL }) => (
+                <ImageGalleryItem
+                  key={id}
+                  webformatURL={webformatURL}
+                  largeImageURL={largeImageURL}
+                  onClose={this.props.onClose}
+                  onLargeImailURL={this.props.onLargeImailURL}
+                />
+              ))}
             </>
           </Gallery>
 
-          {this.state.loader && (
+          {loader && (
             <Loading>
               <Loader />
             </Loading>
@@ -101,7 +99,7 @@ export class ImageGallery extends Component {
     if (status === 'idle') {
       return (
         <Loading>
-          <p>Введите данные для поиска</p>
+          <p>Введіть дані для пошуку</p>
         </Loading>
       );
     }
@@ -117,7 +115,7 @@ export class ImageGallery extends Component {
     if (status === 'rejected') {
       return (
         <Loading>
-          <p>{`Изображения "${this.props.searchData}" отсутствуют`}</p>
+          <p>{`Зображення "${this.props.searchData}" відсутні`}</p>
         </Loading>
       );
     }

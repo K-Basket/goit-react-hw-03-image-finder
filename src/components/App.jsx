@@ -4,15 +4,14 @@ import { Searchbar } from './Searchbar';
 import { ImageGallery } from './ImageGallery';
 import { Modal } from './Modal';
 // import { Button } from './Button';
-import { ImageGalleryItem } from './ImageGalleryItem';
+// import { ImageGalleryItem } from './ImageGalleryItem';
 // import { Loader } from './Loader';
 
 export class App extends Component {
   state = {
     showModal: false,
     searchData: '',
-    // loader: false,
-    // dataGallery: [],
+    largeImageURL: '',
   };
 
   componentDidMount() {
@@ -31,6 +30,15 @@ export class App extends Component {
     this.setState(prevState => ({
       showModal: !prevState.showModal,
     }));
+
+    // this.setState({ largeImageURL: evt.target.dataset.url });
+    // if (!this.state.largeImageURL) {
+    //   this.setState({ largeImageURL: evt.target.dataset.url });
+    // }
+
+    // console.log(evt.target);
+    // console.log(evt.target.src);
+    // console.log(evt.target.dataset.url);
   };
 
   // метод для получения данных state.search из формы
@@ -41,44 +49,32 @@ export class App extends Component {
     // this.setState({ loading: true });
   };
 
-  // ==============================================================
-  // handleDataGallery = data => {
-  //   this.setState({ dataGallery: data.hits });
-  // };
+  handleLargeImageURL = url => {
+    // console.log('нужный URL', url);
 
-  // ==============================================================
+    this.setState({ largeImageURL: url });
+  };
 
   render() {
+    // console.log('urlFromStateApp', this.state.largeImageURL);
+
     // console.log('dataGallery:', this.state.dataGallery);
     // console.log(this.state.dataGallery.length);
+    // console.log('largeImageURL', this.state.showModal);
 
     return (
       <Main>
         <Searchbar onSubmit={this.handleFormSubmit} />
 
-        {/* {this.state.loading && <Loader />} */}
-
         <ImageGallery
-          onDataGallery={this.handleDataGallery}
           onClose={this.toggleModal}
           searchData={this.state.searchData}
-        >
-          {/* {this.state.dataGallery.length === 0 && !this.state.loading && (
-            <p>введите данные для поиска</p>
-          )} */}
-          {/* {!this.state.loading && <p>введите данные для поиска</p>}
-
-          {this.state.loading && <Loader />} */}
-
-          {/* {this.state.loading ? <Loader /> : <p>введите данные для поиска</p>} */}
-        </ImageGallery>
-
-        {/* <Button /> */}
+          onLargeImailURL={this.handleLargeImageURL}
+        ></ImageGallery>
 
         {this.state.showModal && (
           <Modal onClose={this.toggleModal}>
-            <div>Modal window</div>
-            <ImageGalleryItem />
+            <img src={this.state.largeImageURL} alt={this.state.searchData} />
           </Modal>
         )}
       </Main>
