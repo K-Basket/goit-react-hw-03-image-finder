@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import Notiflix from 'notiflix';
 import { Header, Form, Button } from './Styled';
 import { ReactComponent as SearchIcon } from '../img/search-solid.svg';
@@ -11,7 +11,11 @@ export class Searchbar extends Component {
     search: '',
   };
 
-  // 2. метод записывает в state значение, которое вводим в поле input
+  static propTypes = {
+    onSubmit: PropTypes.func.isRequired,
+  };
+
+  // метод записывает в state значение, которое вводим в поле input
   handleInputChange = evt => {
     this.setState({ search: evt.currentTarget.value });
   };
@@ -26,8 +30,6 @@ export class Searchbar extends Component {
 
     this.props.onSubmit(this.state);
     this.reset();
-
-    // очистить разметку для нового поиска
   };
 
   reset = () => {

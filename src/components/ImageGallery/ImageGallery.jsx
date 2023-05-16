@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Notiflix from 'notiflix';
 import { Gallery, Loading } from './Styled';
 import { ImageGalleryItem } from 'components/ImageGalleryItem';
 import { Loader } from '../Loader/Loader';
 import { Button } from '../Button/Button';
+import { getImages } from '../Api/api';
 
 export class ImageGallery extends Component {
   state = {
@@ -13,46 +15,39 @@ export class ImageGallery extends Component {
     status: 'idle',
   };
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.searchData !== this.props.searchData) {
-      this.setState({ status: 'pending', dataGallery: [], page: 1 });
+  static propTypes = {
+    searchData: PropTypes.string.isRequired,
+    onLargeImailURL: PropTypes.func.isRequired,
+  };
 
-      fetch(
-        `https://pixabay.com/api/?key=7971179-456b552bdb2500af743f56cc5&q=${this.props.searchData}&image_type=photo&per_page=12&page=${this.state.page}`
-      )
-        .then(res => res.json())
-        .then(data => {
-          if (!data.totalHits) {
-            this.setState({ status: 'rejected' });
-            Notiflix.Notify.info('Sorry, there are no such images');
+  async componentDidUpdate(prevProps, prevState) {
+    const data = await getImages(this.props.searchData, this.state.page);
+    console.log('getImages', data);
 
-            return;
-          }
+    try {
+      if (prevProps.searchData !== this.props.searchData) {
+        this.setState({ status: 'pending', dataGallery: [], page: 1 });
 
-          this.setState({ dataGallery: data.hits, status: 'resolved' });
-        })
-        .catch(error =>
-          this.setState(console.log(error), { satus: 'rejected' })
-        );
-    }
+        if (!data.totalHits) {
+          this.setState({ status: 'rejected' });
+          Notiflix.Notify.info('Sorry, there are no such images');
 
-    if (prevState.page !== this.state.page) {
-      // this.setState({ status: 'pending' });
-      this.setState({ loader: true });
+          return;
+        }
 
-      fetch(
-        `https://pixabay.com/api/?key=7971179-456b552bdb2500af743f56cc5&q=${this.props.searchData}&image_type=photo&per_page=12&page=${this.state.page}`
-      )
-        .then(res => res.json())
-        .then(data => {
-          this.setState(prevState => ({
-            dataGallery: [...prevState.dataGallery, ...data.hits],
-            loader: false,
-          }));
-        })
-        .catch(error =>
-          this.setState(console.log(error), { satus: 'rejected' })
-        );
+        this.setState({ dataGallery: data.hits, status: 'resolved' });
+      }
+
+      if (prevState.page !== this.state.page) {
+        this.setState({ loader: true });
+
+        this.setState(prevState => ({
+          dataGallery: [...prevState.dataGallery, ...data.hits],
+          loader: false,
+        }));
+      }
+    } catch (error) {
+      console.warn(error);
     }
   }
 

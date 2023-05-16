@@ -17,7 +17,6 @@ export class App extends Component {
     }));
   };
 
-  // метод для получения данных state.search из формы
   handleFormSubmit = data => {
     // console.log('data-Search', data);
 
