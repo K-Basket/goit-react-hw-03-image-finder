@@ -60,12 +60,6 @@ export class ImageGallery extends Component {
     this.setState(prevState => ({ page: prevState.page + 1 }));
   };
 
-  // getLinkImage = evt => {
-  //   // console.log(evt.target.src);
-  //   console.log(evt.target);
-  //   console.log('Hi');
-  // };
-
   render() {
     const { status, loader, dataGallery } = this.state;
 
