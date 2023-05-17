@@ -15,98 +15,103 @@ export class ImageGallery extends Component {
     status: 'idle',
   };
 
-  static propTypes = {
-    searchData: PropTypes.string.isRequired,
-    onLargeImailURL: PropTypes.func.isRequired,
-  };
+  // static propTypes = {
+  //   searchData: PropTypes.string.isRequired,
+  //   onLargeImailURL: PropTypes.func.isRequired,
+  // };
 
-  async componentDidUpdate(prevProps, prevState) {
-    const data = await getImages(this.props.searchData, this.state.page);
-    console.log('getImages', data);
+  // async componentDidUpdate(prevProps, prevState) {
+  //   const data = await getImages(this.props.searchData, this.state.page);
 
-    try {
-      if (prevProps.searchData !== this.props.searchData) {
-        this.setState({ status: 'pending', dataGallery: [], page: 1 });
+  //   console.log('getImages', data);
 
-        if (!data.totalHits) {
-          this.setState({ status: 'rejected' });
-          Notiflix.Notify.info('Sorry, there are no such images');
+  //   try {
+  //     if (prevProps.searchData !== this.props.searchData) {
+  //       this.setState({ status: 'pending', dataGallery: [], page: 1 });
 
-          return;
-        }
+  //       if (!data.totalHits) {
+  //         this.setState({ status: 'rejected' });
+  //         Notiflix.Notify.info('Sorry, there are no such images');
 
-        this.setState({ dataGallery: data.hits, status: 'resolved' });
-      }
+  //         return;
+  //       }
 
-      if (prevState.page !== this.state.page) {
-        this.setState({ loader: true });
+  //       this.setState({ dataGallery: data.hits, status: 'resolved' });
+  //     }
 
-        this.setState(prevState => ({
-          dataGallery: [...prevState.dataGallery, ...data.hits],
-          loader: false,
-        }));
-      }
-    } catch (error) {
-      console.warn(error);
-    }
-  }
+  //     if (prevState.page !== this.state.page) {
+  //       this.setState({ loader: true });
 
-  addMoreload = () => {
-    this.setState(prevState => ({ page: prevState.page + 1 }));
-  };
+  //       this.setState(prevState => ({
+  //         dataGallery: [...prevState.dataGallery, ...data.hits],
+  //         loader: false,
+  //       }));
+  //     }
+  //   } catch (error) {
+  //     console.warn(error);
+  //   }
+  // }
+
+  // addMoreload = () => {
+  //   this.setState(prevState => ({ page: prevState.page + 1 }));
+  // };
 
   render() {
-    const { status, loader, dataGallery } = this.state;
+    return (
+      <>
+        <Gallery>
+          <>{this.props.children}</>
+        </Gallery>
+      </>
+    );
 
-    if (status === 'resolved') {
-      return (
-        <>
-          <Gallery>
-            <>
-              {dataGallery.map(({ id, webformatURL, largeImageURL }) => (
-                <ImageGalleryItem
-                  key={id}
-                  webformatURL={webformatURL}
-                  largeImageURL={largeImageURL}
-                  onClose={this.props.onClose}
-                  onLargeImailURL={this.props.onLargeImailURL}
-                />
-              ))}
-            </>
-          </Gallery>
-
-          {loader && (
-            <Loading>
-              <Loader />
-            </Loading>
-          )}
-          <Button onMoreLoad={this.addMoreload} />
-        </>
-      );
-    }
-
-    if (status === 'idle') {
-      return (
-        <Loading>
-          <p>Введіть дані для пошуку</p>
-        </Loading>
-      );
-    }
-
-    if (status === 'pending') {
-      return (
-        <Loading>
-          <Loader />
-        </Loading>
-      );
-    }
-
-    if (status === 'rejected') {
-      return (
-        <Loading>
-          <p>{`Зображення "${this.props.searchData}" відсутні`}</p>
-        </Loading>
-      );
-    }
+    // const { status, loader, dataGallery } = this.state;
+    // if (status === 'resolved') {
+    //   return (
+    //     <>
+    //       <Gallery>
+    //         <>
+    //           {this.props.children}
+    //           {/* {dataGallery.map(({ id, webformatURL, largeImageURL }) => (
+    //             <ImageGalleryItem
+    //               key={id}
+    //               webformatURL={webformatURL}
+    //               largeImageURL={largeImageURL}
+    //               onClose={this.props.onClose}
+    //               onLargeImailURL={this.props.onLargeImailURL}
+    //             />
+    //           ))} */}
+    //         </>
+    //   </Gallery>
+    // {loader && (
+    //   <Loading>
+    //     <Loader />
+    //   </Loading>
+    // )}
+    // <Button onMoreLoad={this.addMoreload} />
+    // </>
+    //   );
+    // }
+    // if (status === 'idle') {
+    //   return (
+    //     <Loading>
+    //       <p>Введіть дані для пошуку</p>
+    //     </Loading>
+    //   );
+    // }
+    // if (status === 'pending') {
+    //   return (
+    //     <Loading>
+    //       <Loader />
+    //     </Loading>
+    //   );
+    // }
+    // if (status === 'rejected') {
+    //   return (
+    //     <Loading>
+    //       <p>{`Зображення "${this.props.searchData}" відсутні`}</p>
+    //     </Loading>
+    //   );
+    // }
   }
 }

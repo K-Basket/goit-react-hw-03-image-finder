@@ -6,3 +6,8 @@ export const Main = styled.div`
   grid-gap: 16px;
   padding-bottom: 24px;
 `;
+
+export const Loading = styled.div`
+  display: flex;
+  justify-content: center;
+`;

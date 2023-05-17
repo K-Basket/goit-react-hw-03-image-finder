@@ -11,3 +11,5 @@ export async function getImages(searchData, page) {
 
   return data;
 }
+
+// getImages('89', 1).then(console.log);
