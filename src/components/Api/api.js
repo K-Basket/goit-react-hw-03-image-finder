@@ -9,7 +9,23 @@ export async function getImages(searchData, page) {
     `${BASE_URL}?key=${API_KEY}&${PARAMS}&q=${searchData}&page=${page}`
   );
 
-  return data;
+  // return data;
+
+  // =====================================
+
+  const dataImage = {
+    hits: data.hits.map(el => ({
+      id: el.id,
+      webformatURL: el.webformatURL,
+      largeImageURL: el.largeImageURL,
+    })),
+  };
+
+  const totalImages = { totalHits: data.totalHits };
+
+  const dataImages = { ...dataImage, ...totalImages };
+
+  return dataImages;
 }
 
-// getImages('89', 1).then(console.log);
+// getImages('89', 1).then  (console.log);

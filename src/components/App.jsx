@@ -26,19 +26,18 @@ export class App extends Component {
     try {
       if (prevState.searchData !== this.state.searchData) {
         const data = await getImages(this.state.searchData, this.state.page);
-        // console.log('getImages 1', data);
+        console.log('getImages 1', data);
 
         this.setState({ status: 'pending', dataGallery: [], page: 1 });
 
         if (!data.totalHits) {
-          this.setState({ status: 'rejected' });
+          this.setState({ status: 'rejected', page: 1 });
           Notiflix.Notify.info('Sorry, there are no such images');
 
           return;
         }
 
         this.setState(prevState => ({
-          totalImages: prevState.totalImages + data.hits.length,
           dataGallery: data.hits,
           totalHits: data.totalHits,
           status: 'resolved',
@@ -47,7 +46,7 @@ export class App extends Component {
 
       if (prevState.page !== this.state.page) {
         const data = await getImages(this.state.searchData, this.state.page);
-        // console.log('getImages 2', data);
+        console.log('getImages 2', data);
 
         this.setState({ loader: true });
 
@@ -154,36 +153,5 @@ export class App extends Component {
         </Main>
       );
     }
-
-    // return (
-    //   <Main>
-    //     <Searchbar onSubmit={this.handleFormSubmit} />
-
-    //     <ImageGallery
-    //         onClose={this.toggleModal}
-    //         searchData={this.state.searchData}
-    //         onLargeImailURL={this.handleLargeImageURL}
-    //       >
-    //         <h3>Basket</h3>
-    //         {this.state.dataGallery.map(
-    //           ({ id, webformatURL, largeImageURL }) => (
-    //             <ImageGalleryItem
-    //               key={id}
-    //               webformatURL={webformatURL}
-    //               largeImageURL={largeImageURL}
-    //               onClose={this.props.onClose}
-    //               onLargeImailURL={this.props.onLargeImailURL}
-    //             />
-    //           )
-    //         )}
-    //       </ImageGallery>
-
-    // {this.state.showModal && (
-    //   <Modal onClose={this.toggleModal}>
-    //     <img src={this.state.largeImageURL} alt={this.state.searchData} />
-    //   </Modal>
-    // )}
-    //   </Main>
-    // );
   }
 }
